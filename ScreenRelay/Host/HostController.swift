@@ -103,8 +103,11 @@ final class HostController: ObservableObject {
     /// screen is idle (the app is in the background and barely busy), and it takes
     /// seconds to return to full speed once the screen changes again.
     private var streamingActivity: NSObjectProtocol?
-    /// This connection's local bridge address, reused for the cursor datagrams.
+    /// This connection's local bridge address when "wired only" bound it explicitly.
     private var connectionLocalAddress: String?
+    /// Whether the connection, once ready, actually runs over the Thunderbolt Bridge.
+    /// Found from its local address, so it's also right for connections made by name.
+    private var connectionUsesBridge = false
     private var cursorRelay: CursorRelay?
     private var cursorFallbackTimer: Timer?
     private var cursorChannelReady = false
@@ -278,7 +281,10 @@ final class HostController: ObservableObject {
                     print("[Host] Waiting for network path: \(error)")
                     self.lastWaitingError = error
                 case .ready:
-                    self.pathDescription = Self.describePath(connection.connection.currentPath)
+                    let link = Self.describeLink(connection.connection.currentPath)
+                    self.pathDescription = link.description
+                    self.connectionUsesBridge = link.isBridge
+                    print("[Host] Connected over \(link.description)")
                 default:
                     break
                 }
@@ -507,6 +513,7 @@ final class HostController: ObservableObject {
         session = nil
         ackRelay.session = nil
         pathDescription = ""
+        connectionUsesBridge = false
         liveStats = ""
         connection?.onStateChange = nil
         connection?.onMessage = nil
@@ -583,7 +590,7 @@ final class HostController: ObservableObject {
     private func makeSession(for hello: TargetHello, over connection: MessageConnection,
                              size: (width: Int, height: Int)) throws -> any StreamSession {
         let useTiles: Bool = switch pictureMode {
-        case .automatic: hello.supportsBC7 && connectionLocalAddress != nil
+        case .automatic: hello.supportsBC7 && (connectionLocalAddress != nil || connectionUsesBridge)
         case .native: hello.supportsBC7
         case .compressed: false
         }
@@ -666,8 +673,15 @@ final class HostController: ObservableObject {
             fallBackToCursorInVideo(reason: "no target address")
             return
         }
+        // Send the datagrams from the stream's own local address, so they take the same
+        // link (link-local addresses could otherwise be routed out over Wi‑Fi) and the
+        // target recognizes them as coming from this host.
+        var localHost: NWEndpoint.Host?
+        if case let .hostPort(local, _) = connection.connection.currentPath?.localEndpoint {
+            localHost = local
+        }
         let relay = CursorRelay(displayID: displayID, targetHost: host,
-                                localAddress: connectionLocalAddress, control: connection)
+                                localHost: localHost, control: connection)
         relay.start()
         cursorRelay = relay
         cursorChannelReady = false
@@ -752,16 +766,32 @@ final class HostController: ObservableObject {
         }
     }
 
-    private static func describePath(_ path: NWPath?) -> String {
-        guard let path, let interface = path.availableInterfaces.first else { return "" }
-        let kind: String = switch interface.type {
+    /// The interface a ready connection really uses. The path's interface list can't be
+    /// trusted for this (it never includes the Thunderbolt Bridge, and its first entry is
+    /// just a candidate), so the interface is found from the connection's local address.
+    private static func describeLink(_ path: NWPath?) -> (description: String, isBridge: Bool) {
+        guard let path else { return ("", false) }
+        var name: String?
+        if case let .hostPort(host, _) = path.localEndpoint {
+            switch host {
+            case let .ipv4(address): name = address.interface?.name
+            case let .ipv6(address): name = address.interface?.name
+            default: break
+            }
+            if name == nil {
+                let local = CursorController.address(host)
+                name = NetworkAddresses.ipv4Addresses().first { $0.address == local }?.interface
+            }
+        }
+        guard let name = name ?? path.availableInterfaces.first?.name else { return ("", false) }
+        if name.hasPrefix("bridge") { return ("Thunderbolt Bridge (\(name))", true) }
+        let kind: String = switch path.availableInterfaces.first(where: { $0.name == name })?.type {
         case .wifi: "Wi‑Fi"
         case .wiredEthernet: "Ethernet"
-        case .other where interface.name.hasPrefix("bridge"): "Thunderbolt Bridge"
         case .loopback: "Loopback"
         default: "Wired"
         }
-        return "\(kind) (\(interface.name))"
+        return ("\(kind) (\(name))", false)
     }
 
     /// Prefers HEVC (better quality per bit, and needed above 4K) and falls back to H.264.

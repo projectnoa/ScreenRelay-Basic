@@ -26,14 +26,15 @@ final class CursorRelay {
     private var lastShapeSignature: Data?
     private var lastShapeCheck = Date.distantPast
 
-    init(displayID: CGDirectDisplayID, targetHost: NWEndpoint.Host, localAddress: String?, control: MessageConnection) {
+    /// - Parameter localHost: The stream connection's local address; datagrams are sent
+    ///   from it so they use the same link and the target can match them to the stream.
+    init(displayID: CGDirectDisplayID, targetHost: NWEndpoint.Host, localHost: NWEndpoint.Host?, control: MessageConnection) {
         self.displayID = displayID
         self.control = control
         let parameters = NWParameters.udp
         parameters.serviceClass = .interactiveVoice
-        if let localAddress, let address = IPv4Address(localAddress) {
-            // Same reason as the TCP connection: keep link-local traffic on the bridge.
-            parameters.requiredLocalEndpoint = .hostPort(host: .ipv4(address), port: .any)
+        if let localHost {
+            parameters.requiredLocalEndpoint = .hostPort(host: localHost, port: .any)
         }
         guard let port = NWEndpoint.Port(rawValue: RelayProtocol.cursorPort) else { fatalError("invalid cursor port") }
         datagrams = NWConnection(host: targetHost, port: port, using: parameters)
