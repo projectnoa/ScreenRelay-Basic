@@ -37,6 +37,14 @@ final class FullScreenPresenter: NSObject, NSWindowDelegate {
             && !window.isMiniaturized && window.isOnActiveSpace
     }
 
+    /// Whether the stream is what this screen shows: frontmost, or full screen on the
+    /// current Space even if activating the app didn't take (another app may still be
+    /// active behind its own Space).
+    var isStreamShowing: Bool {
+        guard let window, window.isVisible, !window.isMiniaturized, window.isOnActiveSpace else { return false }
+        return isStreamFrontmost || window.styleMask.contains(.fullScreen)
+    }
+
     /// Where a picture of the given aspect ratio is drawn, in screen coordinates
     /// (AppKit's, origin at the bottom left of the main display).
     func videoRect(aspectRatio: CGFloat) -> NSRect? {
@@ -90,6 +98,21 @@ final class FullScreenPresenter: NSObject, NSWindowDelegate {
 
         setKeepsDisplayAwake(true)
         startCursorAutoHide()
+        activateUntilFrontmost(attemptsLeft: 5)
+    }
+
+    /// Activating right after switching the activation policy is often ignored (more so
+    /// when the screen has just woken), which left the stream in the background and the
+    /// host's pointer unable to move the cursor here. Retry for a few seconds until it sticks.
+    private func activateUntilFrontmost(attemptsLeft: Int) {
+        guard attemptsLeft > 0 else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self, let window = self.window, !self.isStreamFrontmost,
+                  !window.isMiniaturized else { return }
+            NSApp.activate(ignoringOtherApps: true)
+            window.makeKeyAndOrderFront(nil)
+            self.activateUntilFrontmost(attemptsLeft: attemptsLeft - 1)
+        }
     }
 
     /// While on, the panel and the Mac stay awake for the session even while another Space
