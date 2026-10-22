@@ -156,8 +156,10 @@ open ScreenRelay again from Finder or Spotlight to show its window.
 
 ## Contributing
 
-Issues and pull requests are welcome. If you change the wire protocol, bump
-`RelayProtocol.version` and never reuse a message number.
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Contributions
+are accepted under the [Contributor License Agreement](CLA.md): you keep the copyright to your
+work, and you also allow the maintainer to use it in other editions of ScreenRelay, including
+commercial ones.
 
 ## License
 
@@ -169,6 +171,9 @@ See [LICENSE](LICENSE) for the full text.
 
 If you distribute a modified version, it must also be under the GPL v3, with its source code
 available.
+
+Contributions to this repository are made under the [Contributor License Agreement](CLA.md),
+which is separate from, and in addition to, the GPL v3.
 
 ## Support
 
