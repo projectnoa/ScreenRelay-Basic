@@ -58,6 +58,8 @@ final class TargetController: ObservableObject {
     private var listener: NWListener?
     private var connection: MessageConnection?
     private var pathMonitor: NWPathMonitor?
+    private var addressTimer: Timer?
+    private var wiredInterfaceNames: Set<String> = []
     private var wiredAddresses: [String] = []
 
     // Handshake state for the current connection (main thread).
@@ -120,6 +122,8 @@ final class TargetController: ObservableObject {
         listener = nil
         pathMonitor?.cancel()
         pathMonitor = nil
+        addressTimer?.invalidate()
+        addressTimer = nil
         cursorController.stop()
         phase = .stopped
     }
@@ -141,11 +145,23 @@ final class TargetController: ObservableObject {
         monitor.start(queue: networkQueue)
         pathMonitor = monitor
         updateAddresses(wiredInterfaceNames: [])
+
+        // The path monitor doesn't see the Thunderbolt Bridge, so a new bridge address
+        // (e.g. picked again after a night of sleep) would otherwise go unadvertised and
+        // hosts would keep trying the old one. Re-reading the addresses is cheap.
+        addressTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.updateAddresses(wiredInterfaceNames: self.wiredInterfaceNames)
+            }
+        }
     }
 
     private func updateAddresses(wiredInterfaceNames: Set<String>) {
+        self.wiredInterfaceNames = wiredInterfaceNames
         let addresses = NetworkAddresses.ipv4Addresses()
-        localAddresses = addresses.map { "\($0.address) (\($0.interface))" }
+        let described = addresses.map { "\($0.address) (\($0.interface))" }
+        if described != localAddresses { localAddresses = described }
 
         // Thunderbolt Bridge first, then any other wired interface (e.g. Ethernet).
         let wired = addresses

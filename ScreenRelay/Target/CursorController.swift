@@ -26,6 +26,7 @@ final class CursorController {
 
     // Shared with the receive queue (guarded by `lock`).
     nonisolated(unsafe) private var expectedHost: String?
+    nonisolated(unsafe) private var lastSource: NWEndpoint?
     nonisolated(unsafe) private var lastSequence: UInt32?
     nonisolated(unsafe) private var latest: CursorDatagram?
     nonisolated(unsafe) private var applyScheduled = false
@@ -53,6 +54,18 @@ final class CursorController {
             listener.newConnectionHandler = { [weak self] connection in
                 self?.accept(connection)
             }
+            // A listener can fail across sleep or network changes; without it the host's
+            // pointer would silently stop arriving until the app was restarted.
+            listener.stateUpdateHandler = { [weak self, weak listener] state in
+                guard case let .failed(error) = state else { return }
+                print("[Cursor] UDP listener failed: \(error). Restarting.")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self, weak listener] in
+                    guard let self, let listener, self.listener === listener else { return }
+                    listener.cancel()
+                    self.listener = nil
+                    self.start()
+                }
+            }
             listener.start(queue: receiveQueue)
             self.listener = listener
         } catch {
@@ -70,6 +83,7 @@ final class CursorController {
     func beginSession(hostAddress: String?) {
         lock.withLock {
             expectedHost = hostAddress
+            lastSource = nil
             lastSequence = nil
             latest = nil
             announcedReady = false
@@ -77,6 +91,8 @@ final class CursorController {
         shape = nil
         cursor = .arrow
         cursorScale = 0
+        localInputUntil = .distantPast
+        if let localMonitor { NSEvent.removeMonitor(localMonitor) }
         localMonitor = NSEvent.addLocalMonitorForEvents(
             matching: [.mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged,
                        .leftMouseDown, .rightMouseDown, .otherMouseDown, .scrollWheel]
@@ -146,6 +162,12 @@ final class CursorController {
         let source = Self.address(host)
         let (accepted, announce, schedule) = lock.withLock { () -> (Bool, Bool, Bool) in
             guard let expectedHost, source == expectedHost else { return (false, false, false) }
+            // A new sender (the host reconnected from a new port) numbers from scratch, so
+            // stragglers from an earlier one mustn't make its positions look out of order.
+            if endpoint != lastSource {
+                lastSource = endpoint
+                lastSequence = nil
+            }
             // Drop datagrams that arrive out of order (wrap-around safe).
             if let lastSequence, Int32(bitPattern: datagram.sequence &- lastSequence) <= 0 {
                 return (false, false, false)
@@ -180,7 +202,7 @@ final class CursorController {
 
         // Leave the cursor alone while this Mac is being used directly, or the stream
         // isn't on screen (e.g. the desktop Space is showing).
-        guard presenter.isStreamFrontmost, Date() >= localInputUntil else { return }
+        guard presenter.isStreamShowing, Date() >= localInputUntil else { return }
 
         guard datagram.visible else {
             // The host's pointer is on one of its other displays.
