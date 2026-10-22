@@ -1,0 +1,590 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		20CAE99B30881CCF00404050 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20CAE98530881CCE00404050 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 20CAE98C30881CCE00404050;
+			remoteInfo = ScreenRelay;
+		};
+		20CAE9A530881CCF00404050 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20CAE98530881CCE00404050 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 20CAE98C30881CCE00404050;
+			remoteInfo = ScreenRelay;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		20804FA0308993ED006B6BC2 /* Embed System Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "$(SYSTEM_EXTENSIONS_FOLDER_PATH)";
+			dstSubfolder = Product;
+			files = (
+			);
+			name = "Embed System Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		20CAE98D30881CCE00404050 /* ScreenRelay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenRelay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20CAE99A30881CCF00404050 /* ScreenRelayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScreenRelayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		20CAE9A430881CCF00404050 /* ScreenRelayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScreenRelayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		20CAE9B630881EFC00404050 /* Exceptions for "ScreenRelay" folder in "ScreenRelay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 20CAE98C30881CCE00404050 /* ScreenRelay */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		20CAE98F30881CCE00404050 /* ScreenRelay */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				20CAE9B630881EFC00404050 /* Exceptions for "ScreenRelay" folder in "ScreenRelay" target */,
+			);
+			path = ScreenRelay;
+			sourceTree = "<group>";
+		};
+		20CAE99D30881CCF00404050 /* ScreenRelayTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ScreenRelayTests;
+			sourceTree = "<group>";
+		};
+		20CAE9A730881CCF00404050 /* ScreenRelayUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ScreenRelayUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		20CAE98A30881CCE00404050 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		20CAE99730881CCF00404050 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		20CAE9A130881CCF00404050 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20CAE98430881CCE00404050 = {
+			isa = PBXGroup;
+			children = (
+				20CAE98F30881CCE00404050 /* ScreenRelay */,
+				20CAE99D30881CCF00404050 /* ScreenRelayTests */,
+				20CAE9A730881CCF00404050 /* ScreenRelayUITests */,
+				20CAE98E30881CCE00404050 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		20CAE98E30881CCE00404050 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				20CAE98D30881CCE00404050 /* ScreenRelay.app */,
+				20CAE99A30881CCF00404050 /* ScreenRelayTests.xctest */,
+				20CAE9A430881CCF00404050 /* ScreenRelayUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		20CAE98C30881CCE00404050 /* ScreenRelay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20CAE9AC30881CCF00404050 /* Build configuration list for PBXNativeTarget "ScreenRelay" */;
+			buildPhases = (
+				20CAE98930881CCE00404050 /* Sources */,
+				20CAE98A30881CCE00404050 /* Frameworks */,
+				20CAE98B30881CCE00404050 /* Resources */,
+				20804FA0308993ED006B6BC2 /* Embed System Extensions */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				20CAE98F30881CCE00404050 /* ScreenRelay */,
+			);
+			name = ScreenRelay;
+			productName = ScreenRelay;
+			productReference = 20CAE98D30881CCE00404050 /* ScreenRelay.app */;
+			productType = "com.apple.product-type.application";
+		};
+		20CAE99930881CCF00404050 /* ScreenRelayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20CAE9AF30881CCF00404050 /* Build configuration list for PBXNativeTarget "ScreenRelayTests" */;
+			buildPhases = (
+				20CAE99630881CCF00404050 /* Sources */,
+				20CAE99730881CCF00404050 /* Frameworks */,
+				20CAE99830881CCF00404050 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				20CAE99C30881CCF00404050 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				20CAE99D30881CCF00404050 /* ScreenRelayTests */,
+			);
+			name = ScreenRelayTests;
+			productName = ScreenRelayTests;
+			productReference = 20CAE99A30881CCF00404050 /* ScreenRelayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		20CAE9A330881CCF00404050 /* ScreenRelayUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20CAE9B230881CCF00404050 /* Build configuration list for PBXNativeTarget "ScreenRelayUITests" */;
+			buildPhases = (
+				20CAE9A030881CCF00404050 /* Sources */,
+				20CAE9A130881CCF00404050 /* Frameworks */,
+				20CAE9A230881CCF00404050 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				20CAE9A630881CCF00404050 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				20CAE9A730881CCF00404050 /* ScreenRelayUITests */,
+			);
+			name = ScreenRelayUITests;
+			productName = ScreenRelayUITests;
+			productReference = 20CAE9A430881CCF00404050 /* ScreenRelayUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		20CAE98530881CCE00404050 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					20CAE98C30881CCE00404050 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					20CAE99930881CCF00404050 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 20CAE98C30881CCE00404050;
+					};
+					20CAE9A330881CCF00404050 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 20CAE98C30881CCE00404050;
+					};
+				};
+			};
+			buildConfigurationList = 20CAE98830881CCE00404050 /* Build configuration list for PBXProject "ScreenRelay" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 20CAE98430881CCE00404050;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 20CAE98E30881CCE00404050 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				20CAE98C30881CCE00404050 /* ScreenRelay */,
+				20CAE99930881CCF00404050 /* ScreenRelayTests */,
+				20CAE9A330881CCF00404050 /* ScreenRelayUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		20CAE98B30881CCE00404050 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		20CAE99830881CCF00404050 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		20CAE9A230881CCF00404050 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		20CAE98930881CCE00404050 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		20CAE99630881CCF00404050 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		20CAE9A030881CCF00404050 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		20CAE99C30881CCF00404050 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 20CAE98C30881CCE00404050 /* ScreenRelay */;
+			targetProxy = 20CAE99B30881CCF00404050 /* PBXContainerItemProxy */;
+		};
+		20CAE9A630881CCF00404050 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 20CAE98C30881CCE00404050 /* ScreenRelay */;
+			targetProxy = 20CAE9A530881CCF00404050 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		20CAE9AA30881CCF00404050 /* Debug configuration for PBXProject "ScreenRelay" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		20CAE9AB30881CCF00404050 /* Release configuration for PBXProject "ScreenRelay" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = TL76QL278K;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		20CAE9AD30881CCF00404050 /* Debug configuration for PBXNativeTarget "ScreenRelay" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = ScreenRelay;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ScreenRelay/ScreenRelay.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScreenRelay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScreenRelay;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "ScreenRelay uses the local network (including the Thunderbolt Bridge) to stream your screen to the other Mac.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.buildthestack.ScreenRelay;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ScreenRelay/ScreenRelay-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		20CAE9AE30881CCF00404050 /* Release configuration for PBXNativeTarget "ScreenRelay" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = ScreenRelay;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ScreenRelay/ScreenRelay.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScreenRelay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScreenRelay;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "ScreenRelay uses the local network (including the Thunderbolt Bridge) to stream your screen to the other Mac.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.buildthestack.ScreenRelay;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ScreenRelay/ScreenRelay-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		20CAE9B030881CCF00404050 /* Debug configuration for PBXNativeTarget "ScreenRelayTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.buildthestack.ScreenRelayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ScreenRelay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ScreenRelay";
+			};
+			name = Debug;
+		};
+		20CAE9B130881CCF00404050 /* Release configuration for PBXNativeTarget "ScreenRelayTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.buildthestack.ScreenRelayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ScreenRelay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ScreenRelay";
+			};
+			name = Release;
+		};
+		20CAE9B330881CCF00404050 /* Debug configuration for PBXNativeTarget "ScreenRelayUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.buildthestack.ScreenRelayUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ScreenRelay;
+			};
+			name = Debug;
+		};
+		20CAE9B430881CCF00404050 /* Release configuration for PBXNativeTarget "ScreenRelayUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL76QL278K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.buildthestack.ScreenRelayUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ScreenRelay;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		20CAE98830881CCE00404050 /* Build configuration list for PBXProject "ScreenRelay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20CAE9AA30881CCF00404050 /* Debug configuration for PBXProject "ScreenRelay" */,
+				20CAE9AB30881CCF00404050 /* Release configuration for PBXProject "ScreenRelay" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		20CAE9AC30881CCF00404050 /* Build configuration list for PBXNativeTarget "ScreenRelay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20CAE9AD30881CCF00404050 /* Debug configuration for PBXNativeTarget "ScreenRelay" */,
+				20CAE9AE30881CCF00404050 /* Release configuration for PBXNativeTarget "ScreenRelay" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		20CAE9AF30881CCF00404050 /* Build configuration list for PBXNativeTarget "ScreenRelayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20CAE9B030881CCF00404050 /* Debug configuration for PBXNativeTarget "ScreenRelayTests" */,
+				20CAE9B130881CCF00404050 /* Release configuration for PBXNativeTarget "ScreenRelayTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		20CAE9B230881CCF00404050 /* Build configuration list for PBXNativeTarget "ScreenRelayUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20CAE9B330881CCF00404050 /* Debug configuration for PBXNativeTarget "ScreenRelayUITests" */,
+				20CAE9B430881CCF00404050 /* Release configuration for PBXNativeTarget "ScreenRelayUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 20CAE98530881CCE00404050 /* Project object */;
+	validationLevel = 1;
+}
