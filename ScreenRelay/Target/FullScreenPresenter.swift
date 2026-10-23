@@ -22,6 +22,11 @@ final class FullScreenPresenter: NSObject, NSWindowDelegate {
     private var lastMouseMove = Date()
     private var cursorHidden = false
     private var onClose: (() -> Void)?
+    /// The stream should be full screen: true until the user leaves full screen.
+    private var wantsFullScreen = false
+    /// A full-screen transition is running; toggling again would undo it.
+    private var isChangingFullScreen = false
+    private var screenWakeObserver: NSObjectProtocol?
 
     var isPresented: Bool { window != nil }
 
@@ -93,26 +98,51 @@ final class FullScreenPresenter: NSObject, NSWindowDelegate {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(nil)
-        window.toggleFullScreen(nil)
+        window.onUserToggledFullScreen = { [weak self] entering in
+            self?.wantsFullScreen = entering
+        }
         self.window = window
+        wantsFullScreen = true
+        window.toggleFullScreen(nil)
+
+        // Entering full screen is silently ignored while the panel is asleep or waking.
+        screenWakeObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.screensDidWakeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.restoreFullScreenIfNeeded()
+            }
+        }
 
         setKeepsDisplayAwake(true)
         startCursorAutoHide()
-        activateUntilFrontmost(attemptsLeft: 5)
+        settleWindow(attemptsLeft: 6)
     }
 
     /// Activating right after switching the activation policy is often ignored (more so
     /// when the screen has just woken), which left the stream in the background and the
-    /// host's pointer unable to move the cursor here. Retry for a few seconds until it sticks.
-    private func activateUntilFrontmost(attemptsLeft: Int) {
+    /// host's pointer unable to move the cursor here; entering full screen can be ignored
+    /// the same way. Retry both for a few seconds until they stick.
+    private func settleWindow(attemptsLeft: Int) {
         guard attemptsLeft > 0 else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self, let window = self.window, !self.isStreamFrontmost,
-                  !window.isMiniaturized else { return }
-            NSApp.activate(ignoringOtherApps: true)
-            window.makeKeyAndOrderFront(nil)
-            self.activateUntilFrontmost(attemptsLeft: attemptsLeft - 1)
+            guard let self, let window = self.window, !window.isMiniaturized else { return }
+            if !self.isStreamFrontmost {
+                NSApp.activate(ignoringOtherApps: true)
+                window.makeKeyAndOrderFront(nil)
+            }
+            self.restoreFullScreenIfNeeded()
+            let settled = self.isStreamFrontmost && (!self.wantsFullScreen || window.styleMask.contains(.fullScreen))
+            if !settled { self.settleWindow(attemptsLeft: attemptsLeft - 1) }
         }
+    }
+
+    /// Puts the stream back in full screen if it should be and isn't (e.g. entering it
+    /// was ignored while the panel was asleep), unless the user left full screen.
+    func restoreFullScreenIfNeeded() {
+        guard let window, wantsFullScreen, !isChangingFullScreen, window.isVisible, !window.isMiniaturized,
+              !window.styleMask.contains(.fullScreen), CGDisplayIsAsleep(CGMainDisplayID()) == 0 else { return }
+        window.toggleFullScreen(nil)
     }
 
     /// While on, the panel and the Mac stay awake for the session even while another Space
@@ -142,6 +172,12 @@ final class FullScreenPresenter: NSObject, NSWindowDelegate {
         guard let window else { return }
         self.window = nil
         onClose = nil
+        wantsFullScreen = false
+        isChangingFullScreen = false
+        if let screenWakeObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(screenWakeObserver)
+        }
+        screenWakeObserver = nil
         window.delegate = nil
         window.orderOut(nil)
         window.close()
@@ -158,8 +194,32 @@ final class FullScreenPresenter: NSObject, NSWindowDelegate {
         DispatchQueue.main.async { onClose?() }
     }
 
+    func windowWillEnterFullScreen(_ notification: Notification) {
+        isChangingFullScreen = true
+    }
+
+    func windowDidEnterFullScreen(_ notification: Notification) {
+        isChangingFullScreen = false
+    }
+
+    func windowDidFailToEnterFullScreen(_ window: NSWindow) {
+        isChangingFullScreen = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.restoreFullScreenIfNeeded()
+        }
+    }
+
+    func windowWillExitFullScreen(_ notification: Notification) {
+        isChangingFullScreen = true
+    }
+
     func windowDidExitFullScreen(_ notification: Notification) {
+        isChangingFullScreen = false
         window?.finishPendingMiniaturize()
+    }
+
+    func windowDidFailToExitFullScreen(_ window: NSWindow) {
+        isChangingFullScreen = false
     }
 
     // MARK: - Cursor
@@ -202,19 +262,29 @@ private final class StreamWindow: NSWindow {
 
     private var isFullScreen: Bool { styleMask.contains(.fullScreen) }
 
+    /// Called with `true` when the user enters full screen and `false` when they leave it
+    /// (Esc, ⌘M, the green button or the View menu). The presenter's own calls pass `nil`.
+    var onUserToggledFullScreen: ((Bool) -> Void)?
+
+    override func toggleFullScreen(_ sender: Any?) {
+        if sender != nil { onUserToggledFullScreen?(!isFullScreen) }
+        super.toggleFullScreen(sender)
+    }
+
     override func keyDown(with event: NSEvent) {
         if event.keyCode == 53, isFullScreen { // Esc leaves full screen; the stream keeps running.
-            toggleFullScreen(nil)
-        } else {
-            super.keyDown(with: event)
+            toggleFullScreen(self)
         }
+        // Other keys are ignored without passing them on: the stream takes no typing, and
+        // AppKit answers every unhandled key with the alert sound. Shortcuts such as ⌘M
+        // and ⌘W are menu key equivalents, handled before this.
     }
 
     /// Full-screen windows can't be minimized, so ⌘M first leaves full screen.
     override func performMiniaturize(_ sender: Any?) {
         if isFullScreen {
             miniaturizeAfterFullScreen = true
-            toggleFullScreen(nil)
+            toggleFullScreen(self)
         } else {
             super.performMiniaturize(sender)
         }

@@ -126,6 +126,12 @@ final class HostController: ObservableObject {
     private var userDisconnected = false
     private var reconnectTimer: Timer?
     private var workspaceObservers: [NSObjectProtocol] = []
+    /// Between "will sleep" and "did wake". Timers keep firing during the brief dark wakes
+    /// a sleeping laptop makes (Power Nap, network upkeep), and reconnecting then woke
+    /// the display for a stream with nothing to show.
+    private var isSystemAsleep = false
+    /// This Mac's screens are off (asleep, or the lid is closed).
+    private var areScreensAsleep = false
 
     /// The connected display's app version, and whether it differs from this Mac's.
     @Published private(set) var targetAppVersion = ""
@@ -166,7 +172,10 @@ final class HostController: ObservableObject {
 
         observeSleepAndWake()
         reconnectTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated { self?.reconnectIfNeeded() }
+            MainActor.assumeIsolated {
+                self?.reconnectIfNeeded()
+                self?.sendAwakeHeartbeat()
+            }
         }
     }
 
@@ -373,6 +382,9 @@ final class HostController: ObservableObject {
 
     private func reconnectIfNeeded() {
         guard autoConnect, !userDisconnected, browser != nil, let name = lastTargetName else { return }
+        // Only reconnect when someone can see this Mac's screen; the display is woken
+        // when a stream starts.
+        guard !isSleepingOrDark else { return }
         switch phase {
         case .idle, .failed: break
         default: return
@@ -393,20 +405,69 @@ final class HostController: ObservableObject {
             })
         }
         // The display goes dark with this Mac, and comes back when it does.
-        observe(NSWorkspace.willSleepNotification) { [weak self] in self?.sendSleepState(asleep: true) }
-        observe(NSWorkspace.screensDidSleepNotification) { [weak self] in self?.sendSleepState(asleep: true) }
-        observe(NSWorkspace.screensDidWakeNotification) { [weak self] in self?.sendSleepState(asleep: false) }
+        observe(NSWorkspace.willSleepNotification) { [weak self] in
+            guard let self else { return }
+            self.isSystemAsleep = true
+            self.closeForSleep()
+        }
+        observe(NSWorkspace.screensDidSleepNotification) { [weak self] in
+            self?.areScreensAsleep = true
+            self?.sendSleepState(asleep: true)
+        }
+        observe(NSWorkspace.screensDidWakeNotification) { [weak self] in
+            guard let self else { return }
+            self.areScreensAsleep = false
+            self.sendSleepState(asleep: false)
+            self.reconnectIfNeeded()
+        }
         observe(NSWorkspace.didWakeNotification) { [weak self] in
             guard let self else { return }
+            self.isSystemAsleep = false
             self.userDisconnected = false
             // The network needs a moment after wake; the 5-second timer keeps trying too.
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { self.reconnectIfNeeded() }
         }
     }
 
+    /// Asleep, in a dark wake, or with every screen off. The notifications are backed up
+    /// by asking the main display directly, in case a dark wake skipped one of them.
+    private var isSleepingOrDark: Bool {
+        isSystemAsleep || areScreensAsleep || CGDisplayIsAsleep(CGMainDisplayID()) != 0
+    }
+
+    /// Says "asleep", then closes the connection rather than leave it open through sleep.
+    /// An open connection keeps packets arriving (the display's keepalives, its replies),
+    /// and each one can wake this Mac briefly; the next real wake reconnects.
+    private func closeForSleep() {
+        guard let connection else { return }
+        guard targetVerified else {
+            disconnect()
+            return
+        }
+        connection.send(.hostSleepState, payload: Data([1])) { [weak self, weak connection] _ in
+            DispatchQueue.main.async {
+                guard let self, let connection, self.connection === connection else { return }
+                self.disconnect()
+            }
+        }
+        // Don't let a stalled send keep the connection open into sleep.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self, weak connection] in
+            guard let self, let connection, self.connection === connection else { return }
+            self.disconnect()
+        }
+    }
+
     private func sendSleepState(asleep: Bool) {
         guard targetVerified, let connection else { return }
         connection.send(.hostSleepState, payload: Data([asleep ? 1 : 0]))
+    }
+
+    /// While streaming and awake, repeats "awake" every few seconds. A display that stops
+    /// hearing it (this Mac slept without a word, or the link stalled) stops holding its
+    /// panel on.
+    private func sendAwakeHeartbeat() {
+        guard case .streaming = phase, !isSleepingOrDark else { return }
+        sendSleepState(asleep: false)
     }
 
     // MARK: - Pairing and authentication

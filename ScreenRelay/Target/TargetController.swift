@@ -59,6 +59,14 @@ final class TargetController: ObservableObject {
     private var connection: MessageConnection?
     private var pathMonitor: NWPathMonitor?
     private var addressTimer: Timer?
+
+    // The host's sleep state for the current stream (main thread).
+    private var hostAsleep = false
+    /// The host stopped sending its "awake" heartbeat.
+    private var hostSilent = false
+    private var hostSendsHeartbeat = false
+    private var lastHostAwake: Date?
+    private var silenceTimer: Timer?
     private var wiredInterfaceNames: Set<String> = []
     private var wiredAddresses: [String] = []
 
@@ -307,6 +315,14 @@ final class TargetController: ObservableObject {
 
         // The host is back (e.g. it just woke up): turn this panel on.
         DisplayPower.wakeDisplay()
+        hostAsleep = false
+        hostSilent = false
+        hostSendsHeartbeat = false
+        lastHostAwake = nil
+        silenceTimer?.invalidate()
+        silenceTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.checkHostSilence() }
+        }
 
         guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
         tileRenderer.layer.contentsScale = screen.backingScaleFactor
@@ -331,6 +347,8 @@ final class TargetController: ObservableObject {
     }
 
     private func endStream() {
+        silenceTimer?.invalidate()
+        silenceTimer = nil
         gate.close()
         pairingPrompt.dismiss()
         pairingHost = nil
@@ -443,16 +461,47 @@ final class TargetController: ObservableObject {
 
     // MARK: - Host sleep
 
+    /// After this long without the host's "awake" heartbeat, the panel is no longer held on.
+    private static let hostSilenceLimit: TimeInterval = 20
+
     private func hostSleepStateChanged(asleep: Bool) {
-        guard sleepWithHost else { return }
         if asleep {
+            hostAsleep = true
+            guard sleepWithHost else { return }
             // Let this Mac's own energy settings take over, then turn the panel off now.
             presenter.setKeepsDisplayAwake(false)
             DisplayPower.sleepDisplay()
-        } else {
-            DisplayPower.wakeDisplay()
-            presenter.setKeepsDisplayAwake(true)
+            return
         }
+
+        // Current hosts repeat "awake" every few seconds while streaming; once two arrive
+        // close together, silence means the host is gone. (Older hosts send it only when
+        // their screens wake, and are never held to this.)
+        let now = Date()
+        if let lastHostAwake, now.timeIntervalSince(lastHostAwake) < 15 { hostSendsHeartbeat = true }
+        lastHostAwake = now
+
+        // Repeats only confirm the host is still there; the panel is woken (which counts
+        // as user activity here) only when the host comes back from sleep or silence.
+        guard hostAsleep || hostSilent else { return }
+        hostAsleep = false
+        hostSilent = false
+        if sleepWithHost { DisplayPower.wakeDisplay() }
+        presenter.setKeepsDisplayAwake(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.presenter.restoreFullScreenIfNeeded()
+        }
+    }
+
+    /// A stream whose host has gone quiet (it slept without saying so, or the link stalled
+    /// while the connection lingers) stops holding this panel on, so it can't keep a dark
+    /// window lit until the screen saver starts.
+    private func checkHostSilence() {
+        guard hostSendsHeartbeat, !hostAsleep, !hostSilent, let lastHostAwake,
+              Date().timeIntervalSince(lastHostAwake) > Self.hostSilenceLimit else { return }
+        print("[Target] No word from the host for \(Int(Self.hostSilenceLimit)) s; letting the display sleep normally.")
+        hostSilent = true
+        presenter.setKeepsDisplayAwake(false)
     }
 
     // MARK: - Handshake
